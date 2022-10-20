@@ -1,5 +1,13 @@
 Generate responsive images in Jekyll from pure markdown, without any Liquid tags. A simple wrapper around [jekyll_picture_tag](https://github.com/rbuchberger/jekyll_picture_tag/).
 
+# Installation
+
+```shell
+bundle add jekyll-markdown-responsive-image \
+--git git@github.com:tadamcz/jekyll-markdown-responsive-image.git \
+--group jekyll_plugins
+```
+
 # How it works
 At build time, uses regular expressions to replace your markdown `![Alt](/path/to/img.jpg)` with `{% jmri jmri /path/to/img.jpg alt=\"Alt\" %}`. The gem [`jekyll_picture_tag`](https://github.com/rbuchberger/jekyll_picture_tag/) then does the rest.
 
