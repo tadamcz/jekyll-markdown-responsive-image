@@ -6,7 +6,7 @@ Install [`libvips`](https://www.libvips.org/install.html). (For example, with Ho
 Install the gem:
 ```shell
 bundle add jekyll-markdown-responsive-image \
---git git@github.com:tadamcz/jekyll-markdown-responsive-image.git \
+--git https://github.com/tadamcz/jekyll-markdown-responsive-image.git \
 --group jekyll_plugins
 ```
 
