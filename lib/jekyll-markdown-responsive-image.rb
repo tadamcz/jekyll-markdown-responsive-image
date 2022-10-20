@@ -24,6 +24,11 @@ Jekyll::Hooks.register [:pages, :documents], :pre_render do |post, payload|
         next match
       end
 
+      # Skip external files. jekyll_picture_tag cannot download and process these.
+      if src.start_with?("http://", "https://", "ftp://", "ssh://")
+        next match
+      end
+
       # This allows us to specify in our markdown files
       # the image path relative to the location of the markdown file.
       # That's the format that GUI markdown editors expect.
