@@ -1,5 +1,7 @@
 Generate responsive images in Jekyll from pure markdown, without any Liquid tags. A simple wrapper around [jekyll_picture_tag](https://github.com/rbuchberger/jekyll_picture_tag/).
 
+⚠️ Warning: this is alpha-level software, with several problems and no formal tests. See TODOs below ⚠️
+
 # Installation and usage
 Install [`libvips`](https://www.libvips.org/install.html). (For example, with Homebrew `brew vips` should suffice, or on Ubuntu `apt install libvips libvips-tools`. Note that if you use a deployment or CI service, these dependencies will be required there as well).
 
@@ -34,4 +36,7 @@ Any keys that are not provided will use the `jekyll_picture_tag` [default preset
 At build time, uses regular expressions to replace your markdown `![Alt](/path/to/img.jpg)` with `{% jmri jmri /path/to/img.jpg alt=\"Alt\" %}`. The gem [`jekyll_picture_tag`](https://github.com/rbuchberger/jekyll_picture_tag/) then does the rest.
 
 # TODO, PRs welcome!
-- make regular expression more sophisticated. e.g. it will currently match markdown image tags that are inside code blocks, which is obviously undesirable. (If the image does not exist, `jekyll_picture_tag` will at least fail loudly).
+- add tests
+- do not match markdown image tags that are inside code blocks, which is obviously undesirable.
+- [maybe?] respect (some?) kramdown extensions such as [inline attribute lists](https://kramdown.gettalong.org/syntax.html#inline-attribute-lists)
+- decide what to do about markdown inside HTML blocks (e.g. [see Kramdown](https://kramdown.gettalong.org/syntax.html#html-blocks))
