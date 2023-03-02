@@ -5,14 +5,15 @@ Generate [responsive images](https://developer.mozilla.org/en-US/docs/Learn/HTML
 # Installation and usage
 Install [`libvips`](https://www.libvips.org/install.html). (For example, with Homebrew `brew vips` should suffice, or on Ubuntu `apt install libvips libvips-tools`. Note that if you use a deployment or CI service, these dependencies will be required there as well).
 
-Install the gem:
-```shell
-bundle add jekyll-markdown-responsive-image \
---git https://github.com/tadamcz/jekyll-markdown-responsive-image.git \
---group jekyll_plugins
+Add the gem to your Gemfile:
+```
+group :jekyll_plugins do
+	# other jekyll plugins
+	gem 'jekyll-markdown-responsive-image', github: 'tadamcz/jekyll-markdown-responsive-image'
+end
 ```
 
-That's it! You don't need to configure anything or modify your source files.
+Run `bundle install`. That's it! You don't need to configure anything or modify your source files.
 
 # Configuration
 All configuration is optional.
