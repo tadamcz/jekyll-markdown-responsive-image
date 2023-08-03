@@ -1,48 +1,50 @@
-Jekyll::Hooks.register [:pages, :documents], :pre_render do |post, payload|
-  file_ext = post.extname.tr('.', '')
+require 'jekyll_picture_tag'
+require 'uri'
 
-  # This regex will match all of the following correctly:
-  #
-  # ![](image.png)
-  # ![Alt text](image.png)
-  # ![Alt text!'"@#$%^&*](image.png)
-  # [![Alt Text](image.png)](https://example.com)
-  # > [![Alt Text](image.png)](https://example.com)
-  image_markdown = /!\[([^()]*)\]\(([^()]+)\)/
+# The Jekyll hook we want to use. It runs after the page has been converted to HTML,
+# but before Liquid tags are processed.
+Jekyll::Hooks.register [:pages, :documents], :post_render do |doc, payload|
+  
+  # We only want to process HTML files
+  if doc.output_ext == '.html' or doc.permalink&.end_with?('/')
 
-  # Only process if we deal with a markdown file
-  if payload['site']['markdown_ext'].include? file_ext
+    # The regular expression used to find the <img> tags in the HTML.
+    img_tag_pattern = /<img src="([^"]*)" alt="([^"]*)"[^>]*>/
 
-    post.content = post.content.gsub(image_markdown) do
-      match = Regexp.last_match
-      alt_text = match[1]
-      src = match[2]
-      src_extension = File.extname(src)
+    # The gsub method replaces all instances of the regular expression with the result of the block.
+    doc.output = doc.output.gsub(img_tag_pattern) do |match|
+      
+      # The block is passed the MatchData object. 
+      # The $1, $2, etc. variables contain the parts of the string that matched the parts of the regex inside ().
+      src = $1
+      # Default to image filename if no alt text is provided.
+      alt_text = $2 || File.basename(src, '.*')
 
-      # SVGs are not supported by jekyll_picture_tag
-      if src_extension == ".svg"
-        next match
-      end
 
-      # Skip external files. jekyll_picture_tag cannot download and process these.
-      if src.start_with?("http://", "https://", "ftp://", "ssh://")
-        next match
-      end
+      # We don't want to process SVGs or external files, so we skip those.
+      if src =~ /\.(svg)$/i or src =~ /\A#{URI::DEFAULT_PARSER.make_regexp}\z/
+        match  # Return the original match to leave it unchanged
+      else
 
-      # This allows us to specify in our markdown files
-      # the image path relative to the location of the markdown file.
-      # That's the format that GUI markdown editors expect.
-      src_from_root = "#{File.dirname(post.relative_path)}/#{src}"
+      # The URL for the image could be relative to the site root or the current page.
+      # We construct the URL accordingly.
+      src_from_root = if src.start_with?('/') # handle site-root-relative paths
+                        src
+                      else
+                        File.join('/', File.dirname(doc.url), src)
+                      end
 
+      # We replace the <img> tag with the Liquid tag.
+      # The Liquid tag will be processed in the next step of the Jekyll build process.
       "{% jmri jmri \"#{src_from_root}\" alt=\"#{alt_text}\" %}"
+      end
     end
   end
 end
 
-
-require 'jekyll_picture_tag'
-
+# An alias ensures our plugin can be used alongside jekyll_picture_tag.
 class JMRITag < PictureTag::Picture
 end
 
+# We register the new Liquid tag with Jekyll, so it knows about it and can process it.
 Liquid::Template.register_tag('jmri', JMRITag)

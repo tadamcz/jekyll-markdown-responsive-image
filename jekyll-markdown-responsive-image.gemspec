@@ -15,4 +15,6 @@ Gem::Specification.new do |spec|
   spec.require_paths    = ["lib"]
 
   spec.add_dependency "jekyll_picture_tag", "~> 2"
+  spec.add_development_dependency 'rspec', '~> 3.10'
+  spec.add_development_dependency 'nokogiri', '~> 1.15'
 end
