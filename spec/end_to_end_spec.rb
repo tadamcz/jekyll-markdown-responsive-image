@@ -22,7 +22,7 @@ RSpec.describe 'jmri plugin' do
 
   after(:each) do
     FileUtils.rm_rf(source_dir)
-    # FileUtils.rm_rf(dest_dir)
+    FileUtils.rm_rf(dest_dir)
   end
 
   it 'converts image tag without alt text' do
