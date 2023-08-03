@@ -92,8 +92,20 @@ RSpec.describe 'jmri plugin' do
     expect_rendered_output('<img src="https://example.com/image.png" alt="">')
   end
 
+  it 'converts image with site root relative URL' do
+    write_and_process_page('![](/image.png)')
+    expect_rendered_output('{% jmri jmri "/image.png" alt="" %}')
+  end
+  
+  it 'converts image with page relative URL' do
+    write_and_process_page('![](image.png)', 'directory/page.md')
+    expect_rendered_output('{% jmri jmri "/directory/image.png" alt="" %}', 'directory/page.html')
+  end
+
   def write_and_process_page(content, page_path='page.md')
-    File.write(File.join(source_dir, page_path), <<~MARKDOWN)
+    FileUtils.mkdir_p(File.dirname(File.join(source_dir, page_path)))
+  
+    File.write(File.join(source_dir, page_path), <<~MARKDOWN) 
       ---
       ---
       #{content}
